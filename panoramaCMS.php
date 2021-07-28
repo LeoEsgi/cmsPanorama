@@ -1,14 +1,17 @@
 <?php
 /*
 Plugin Name: Panorama CMS
-Description: Plugin de génération de cms fait par Léo Jehane Saousenne et Nicolas
+Description: Plugin SLIDER Permet de mettre sous forme de diaporama des images.
+Autheur: Saoussene , Nicolas, Léo , Jehane
 Version: 1
 */
 
-add_action('init', 'cmspanorama_init');	
+add_action('init', 'cmspanorama_init');
+add_action('manage_edit-slide_columns', 'cmspanorama_columnfilter');
+add_action('manage_posts_custom_column', 'cmspanorama_column');		
 
 /**
-* Permet d'initialiser les fonctionalités liées au carrousel
+* Permet d'initialiser les fonctionalités liées au Slider
 **/
 function cmspanorama_init(){
 
@@ -39,5 +42,28 @@ function cmspanorama_init(){
 	add_image_size('slider',1000,300,true);
 
 }
+
+/**
+* Cette fonctionne va permettre la gestion des colonnes pour les slides
+* @param array $columns tableau associatif contenant les column $id => $name
+**/
+function cmspanorama_columnfilter($columns){
+	$thumb = array('thumbnail' => 'Image');
+	$columns = array_slice($columns, 0, 1) + $thumb + array_slice($columns,1,null);
+	return $columns;
+}
+
+/**
+* ELle va permettre la gestion du contenu d'une colonne
+* @param String $column Id de la colonne traitée
+**/
+function cmspanorama_column($column){
+	global $post;
+	if($column == 'thumbnail'){
+		echo edit_post_link(get_the_post_thumbnail($post->ID),null,null,$post->ID);
+	}
+}
+
+
 
 ?>
